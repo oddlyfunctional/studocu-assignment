@@ -2,6 +2,10 @@ export type Clock = {
   now: () => Date;
 };
 
+export const clock: Clock = {
+  now: () => new Date(),
+};
+
 export const mockClock = () => {
   let now: Date | null = null;
 

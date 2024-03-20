@@ -1,21 +1,19 @@
+"use client";
+import { NewQnA } from "@/app/components/NewQnA/NewQnA";
 import { QnAList } from "@/app/components/QnAList/QnAList";
 import type { NonEmptyString, QnA } from "@/domain/core";
+import { useState } from "react";
 
 export default function Home() {
-  const mockItems: QnA[] = [
+  const [items, setItems] = useState<QnA[]>([
     {
-      id: "id1",
-      question: "some question" as NonEmptyString,
-      answer: "some answer" as NonEmptyString,
-      createdAt: new Date("2024-01-01 00:00:00"),
+      id: "blankslate",
+      question: "How to add a question?" as NonEmptyString,
+      answer: "Just use the form below!" as NonEmptyString,
+      createdAt: new Date(),
     },
-    {
-      id: "id2",
-      question: "another question" as NonEmptyString,
-      answer: "another answer" as NonEmptyString,
-      createdAt: new Date("2024-01-02 00:00:00"),
-    },
-  ];
+  ]);
+  const addNewQnA = (item: QnA) => setItems((items) => [...items, item]);
 
   return (
     <main>
@@ -23,8 +21,10 @@ export default function Home() {
 
       <div>
         <h2>Created questions</h2>
-        <QnAList items={mockItems} />
+        <QnAList items={items} />
       </div>
+
+      <NewQnA onSubmit={addNewQnA} />
     </main>
   );
 }

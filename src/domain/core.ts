@@ -25,7 +25,10 @@ export type QnA = {
   createdAt: Date;
 };
 
-export type CreateQnAError = "EMPTY_QUESTION" | "EMPTY_ANSWER";
+export type CreateQnAErrors = {
+  question?: "EMPTY_QUESTION";
+  answer?: "EMPTY_ANSWER";
+};
 export const createQnA = (
   {
     question: unvalidatedQuestion,
@@ -33,12 +36,16 @@ export const createQnA = (
   }: { question: string; answer: string },
   random: Random,
   clock: Clock
-): Result<Readonly<QnA>, CreateQnAError> => {
+): Result<Readonly<QnA>, CreateQnAErrors> => {
   const question = makeNonEmptyString(unvalidatedQuestion);
-  if (!question.ok) return error("EMPTY_QUESTION");
-
   const answer = makeNonEmptyString(unvalidatedAnswer);
-  if (!answer.ok) return error("EMPTY_ANSWER");
+
+  const errors: CreateQnAErrors = {};
+  if (!question.ok || !answer.ok) {
+    if (!question.ok) errors.question = "EMPTY_QUESTION";
+    if (!answer.ok) errors.answer = "EMPTY_ANSWER";
+    return error(errors);
+  }
 
   return ok({
     question: question.value,

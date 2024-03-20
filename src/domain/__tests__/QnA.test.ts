@@ -28,21 +28,13 @@ describe("QnA", () => {
     );
   });
 
-  it("fails if question is blank", () => {
-    const qna = createQnA(
-      { question: "", answer: "some answer" },
-      random,
-      clock
+  it("validates blank fields", () => {
+    const qna = createQnA({ question: "", answer: "" }, random, clock);
+    expect(qna).toEqual(
+      error({
+        question: "EMPTY_QUESTION",
+        answer: "EMPTY_ANSWER",
+      })
     );
-    expect(qna).toEqual(error("EMPTY_QUESTION"));
-  });
-
-  it("fails if answer is blank", () => {
-    const qna = createQnA(
-      { question: "some question", answer: "" },
-      random,
-      clock
-    );
-    expect(qna).toEqual(error("EMPTY_ANSWER"));
   });
 });

@@ -4,6 +4,10 @@ export type Random = {
   nextUuid: () => Uuid;
 };
 
+export const random: Random = {
+  nextUuid: () => crypto.randomUUID(),
+};
+
 export const mockRandom = () => {
   let nextUuid: Uuid | null = null;
 
