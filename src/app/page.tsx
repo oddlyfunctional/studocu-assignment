@@ -4,6 +4,12 @@ import { QnAList } from "@/app/components/QnAList/QnAList";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import { useState } from "react";
 
+const compareStrings = (a: string, b: string) => {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+};
+
 export default function Home() {
   const [items, setItems] = useState<QnA[]>([
     {
@@ -14,6 +20,10 @@ export default function Home() {
     },
   ]);
   const addNewQnA = (item: QnA) => setItems((items) => [...items, item]);
+  const sortQnAs = () =>
+    setItems((items) =>
+      [...items].sort((a, b) => compareStrings(a.question, b.question))
+    );
 
   return (
     <main>
@@ -22,6 +32,7 @@ export default function Home() {
       <div>
         <h2>Created questions</h2>
         <QnAList items={items} />
+        <button onClick={sortQnAs}>Sort questions</button>
       </div>
 
       <NewQnA onSubmit={addNewQnA} />
