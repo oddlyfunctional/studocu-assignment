@@ -92,4 +92,28 @@ describe("App", () => {
 
     expect(getAllItems()).toEqual(["Updated question"]);
   });
+
+  it("clears editing item when removing it", async () => {
+    const userEvent = UserEvent.setup();
+    render(<App />);
+
+    const item = screen.getByText("How to add a question?");
+    await userEvent.click(within(item.parentElement!).getByText("Edit"));
+    await userEvent.click(within(item.parentElement!).getByText("Remove"));
+
+    expect(screen.getByLabelText("Question")).toHaveValue("");
+    expect(screen.getByLabelText("Answer")).toHaveValue("");
+  });
+
+  it("clears editing item when removing all items", async () => {
+    const userEvent = UserEvent.setup();
+    render(<App />);
+
+    const item = screen.getByText("How to add a question?");
+    await userEvent.click(within(item.parentElement!).getByText("Edit"));
+    await userEvent.click(screen.getByText("Remove all"));
+
+    expect(screen.getByLabelText("Question")).toHaveValue("");
+    expect(screen.getByLabelText("Answer")).toHaveValue("");
+  });
 });

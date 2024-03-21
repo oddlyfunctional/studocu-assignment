@@ -26,11 +26,23 @@ export const App = () => {
     },
   ]);
   const addNewItem = (item: QnA) => setItems((items) => [...items, item]);
-  const removeItem = (item: QnA) =>
+  const removeItem = (item: QnA) => {
     setItems((items) => items.filter((i) => i.id !== item.id));
+    if (editing === item) {
+      setEditing(null);
+    }
+  };
 
   const [editing, setEditing] = useState<QnA | null>(null);
-  const editItem = (item: QnA) => setEditing(item);
+  const editItem = (item: QnA) => {
+    setEditing((editing) => {
+      if (editing === item) {
+        return null;
+      } else {
+        return item;
+      }
+    });
+  };
   const updateItem = (item: QnA) => {
     setItems((items) =>
       items.map((i) => {
@@ -48,6 +60,11 @@ export const App = () => {
     setItems((items) =>
       [...items].sort((a, b) => compareStrings(a.question, b.question))
     );
+
+  const removeAll = () => {
+    setItems([]);
+    setEditing(null);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -73,7 +90,7 @@ export const App = () => {
                   <Button kind="secondary" onClick={sortQnAs}>
                     Sort
                   </Button>
-                  <Button kind="danger" onClick={() => setItems([])}>
+                  <Button kind="danger" onClick={removeAll}>
                     Remove all
                   </Button>
                 </div>
