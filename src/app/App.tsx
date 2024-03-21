@@ -2,6 +2,7 @@
 import { NewQnA } from "@/app/components/NewQnA/NewQnA";
 import { QnAList } from "@/app/components/QnAList/QnAList";
 import type { NonEmptyString, QnA } from "@/domain/core";
+import { pluralize } from "@/lib/pluralize";
 import { useState } from "react";
 
 const compareStrings = (a: string, b: string) => {
@@ -28,6 +29,16 @@ export const App = () => {
 
   return (
     <main>
+      <aside>
+        Here you can find{" "}
+        {pluralize(items.length, {
+          0: "no questions",
+          1: "1 question",
+          default: "{count} questions",
+        })}
+        . Feel free to create your own questions!
+      </aside>
+
       <h1>The awesome Q/A tool</h1>
 
       <div>

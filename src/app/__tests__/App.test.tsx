@@ -9,6 +9,7 @@ describe("App", () => {
     expect(screen.getByRole("term")).toHaveTextContent(
       "How to add a question?"
     );
+    expect(screen.getByRole("main")).toHaveTextContent("1 question");
   });
 
   it("adds new question", async () => {
@@ -22,6 +23,7 @@ describe("App", () => {
       "How to add a question?",
       "New question",
     ]);
+    expect(screen.getByRole("main")).toHaveTextContent("2 questions");
 
     // and cleans the form
     expect(screen.getByLabelText("Question")).toHaveValue("");
@@ -47,6 +49,7 @@ describe("App", () => {
     render(<App />);
 
     await userEvent.click(screen.getByText("Remove questions"));
+    expect(screen.getByRole("main")).toHaveTextContent("no questions");
 
     expect(screen.queryByRole("term")).not.toBeInTheDocument;
     expect(screen.getByRole("list")).toHaveTextContent("No questions yet");
