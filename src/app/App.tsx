@@ -1,7 +1,7 @@
 "use client";
 import { createQnA, updateQnA } from "@/actions/qnaActions";
 import { QnAForm } from "@/app/components/QnAForm";
-import { QnAList } from "@/app/components/QnAList/QnAList";
+import { QnAItem } from "@/app/components/QnAItem";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import { pluralize } from "@/lib/pluralize";
 import { useState } from "react";
@@ -63,7 +63,18 @@ export const App = () => {
 
       <div>
         <h2>Created questions</h2>
-        <QnAList items={items} onRemove={removeItem} onEdit={editItem} />
+        <dl role="list">
+          {items.length === 0 && <div>{"No questions yet :-("}</div>}
+          {items.map((item) => (
+            <QnAItem
+              item={item}
+              key={item.id}
+              onRemove={removeItem}
+              onEdit={editItem}
+              editing={item === editing}
+            />
+          ))}
+        </dl>
         <button onClick={sortQnAs}>Sort questions</button>
         <button onClick={() => setItems([])}>Remove questions</button>
       </div>

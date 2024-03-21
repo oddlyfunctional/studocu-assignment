@@ -5,12 +5,14 @@ import { useState } from "react";
 
 export const QnAItem = ({
   item,
-  onRemove,
-  onEdit,
+  onRemove = () => {},
+  onEdit = () => {},
+  editing = false,
 }: {
   item: QnA;
-  onRemove: (item: QnA) => void;
-  onEdit: (item: QnA) => void;
+  onRemove?: (item: QnA) => void;
+  onEdit?: (item: QnA) => void;
+  editing?: boolean;
 }) => {
   const [showAnswer, setShowAnswer] = useState(false);
   const toggleAnswer = () => setShowAnswer((showAnswer) => !showAnswer);
@@ -21,6 +23,7 @@ export const QnAItem = ({
         <span onClick={toggleAnswer} aria-label="question">
           {item.question}
         </span>
+        {editing && "*"}
         <button onClick={() => onRemove(item)}>Remove</button>
         <button onClick={() => onEdit(item)}>Edit</button>
       </dt>

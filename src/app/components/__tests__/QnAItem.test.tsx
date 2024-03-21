@@ -1,4 +1,4 @@
-import { QnAItem } from "@/app/components/QnAList/QnAItem";
+import { QnAItem } from "@/app/components/QnAItem";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
@@ -23,11 +23,11 @@ describe("QnAItem", () => {
     render(<QnAItem item={qna} />);
 
     // open
-    await userEvent.click(screen.getByRole("term"));
+    await userEvent.click(screen.getByLabelText("question"));
     expect(screen.getByRole("definition")).toHaveTextContent(qna.answer);
 
     // close
-    await userEvent.click(screen.getByRole("term"));
+    await userEvent.click(screen.getByLabelText("question"));
     expect(screen.queryByRole("definition")).not.toBeInTheDocument;
   });
 });
