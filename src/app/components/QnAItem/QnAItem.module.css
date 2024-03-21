@@ -41,6 +41,7 @@
   color: #666;
   margin-left: 0;
   padding: 1em;
+  white-space: pre;
 }
 
 .editing {
