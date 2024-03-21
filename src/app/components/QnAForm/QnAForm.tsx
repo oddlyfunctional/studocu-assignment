@@ -5,7 +5,7 @@ import { ErrorMessage } from "@/app/components/ErrorMessage/ErrorMessage";
 import type { QnA, QnAValidationErrors } from "@/domain/core";
 import { useForm } from "@/lib/hooks";
 import type { Result } from "@/lib/result";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./QnAForm.module.css";
 
 export type Fields = {
@@ -34,12 +34,14 @@ export const QnAForm = ({
   action: (v: Fields) => Promise<Result<QnA, QnAValidationErrors>>;
   onSubmit: (v: QnA) => void;
 }) => {
+  const formRef = useRef<HTMLFormElement>(null);
   const { register, onSubmit, setFields } = useForm<Fields>(initialState);
   useEffect(() => setFields(initialState), [initialState]);
   const [errors, setErrors] = useState<QnAValidationErrors>({});
 
   return (
     <form
+      ref={formRef}
       onSubmit={onSubmit(async (values) => {
         const qna = await action(values);
         if (qna.ok) {
@@ -70,6 +72,18 @@ export const QnAForm = ({
         <textarea
           {...register("answer", {
             className: styles.input,
+            onKeyDown: (ev) => {
+              if (ev.shiftKey && ev.key === "Enter") {
+                ev.preventDefault();
+                if (formRef.current?.requestSubmit) {
+                  formRef.current?.requestSubmit();
+                } else {
+                  formRef.current?.dispatchEvent(
+                    new Event("submit", { cancelable: true, bubbles: true })
+                  );
+                }
+              }
+            },
           })}
         />
       </label>
