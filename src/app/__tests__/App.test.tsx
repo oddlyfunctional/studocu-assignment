@@ -30,17 +30,17 @@ describe("App", () => {
     expect(screen.getByLabelText("Answer")).toHaveValue("");
   });
 
-  it("sorts the questions alphabetically", async () => {
+  it("sorts the questions alphabetically ignoring case", async () => {
     render(<App />);
 
-    await userEvent.type(screen.getByLabelText("Question"), "A question");
+    await userEvent.type(screen.getByLabelText("Question"), "a question");
     await userEvent.type(screen.getByLabelText("Answer"), "An answer");
     await userEvent.click(screen.getByText("Create question"));
 
     await userEvent.click(screen.getByText("Sort questions"));
 
     expect(screen.getAllByRole("term").map((el) => el.textContent)).toEqual([
-      "A question",
+      "a question",
       "How to add a question?",
     ]);
   });
