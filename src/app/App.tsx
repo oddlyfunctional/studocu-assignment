@@ -22,7 +22,9 @@ export const App = () => {
       createdAt: new Date(),
     },
   ]);
-  const addNewQnA = (item: QnA) => setItems((items) => [...items, item]);
+  const addNewItem = (item: QnA) => setItems((items) => [...items, item]);
+  const removeItem = (item: QnA) =>
+    setItems((items) => items.filter((i) => i.id !== item.id));
 
   const sortQnAs = () =>
     setItems((items) =>
@@ -45,12 +47,12 @@ export const App = () => {
 
       <div>
         <h2>Created questions</h2>
-        <QnAList items={items} />
+        <QnAList items={items} onRemove={removeItem} />
         <button onClick={sortQnAs}>Sort questions</button>
         <button onClick={() => setItems([])}>Remove questions</button>
       </div>
 
-      <NewQnA onSubmit={addNewQnA} />
+      <NewQnA onSubmit={addNewItem} />
     </main>
   );
 };
