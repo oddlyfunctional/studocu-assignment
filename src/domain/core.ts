@@ -25,7 +25,7 @@ export type QnA = {
   createdAt: Date;
 };
 
-export type CreateQnAErrors = {
+export type QnAValidationErrors = {
   question?: "EMPTY_QUESTION";
   answer?: "EMPTY_ANSWER";
 };
@@ -36,11 +36,11 @@ export const createQnA = (
   }: { question: string; answer: string },
   random: Random,
   clock: Clock
-): Result<Readonly<QnA>, CreateQnAErrors> => {
+): Result<Readonly<QnA>, QnAValidationErrors> => {
   const question = makeNonEmptyString(unvalidatedQuestion);
   const answer = makeNonEmptyString(unvalidatedAnswer);
 
-  const errors: CreateQnAErrors = {};
+  const errors: QnAValidationErrors = {};
   if (!question.ok || !answer.ok) {
     if (!question.ok) errors.question = "EMPTY_QUESTION";
     if (!answer.ok) errors.answer = "EMPTY_ANSWER";
@@ -52,5 +52,29 @@ export const createQnA = (
     answer: answer.value,
     id: random.nextUuid(),
     createdAt: clock.now(),
+  });
+};
+
+export const updateQnA = (
+  qna: QnA,
+  {
+    question: unvalidatedQuestion,
+    answer: unvalidatedAnswer,
+  }: { question: string; answer: string }
+): Result<Readonly<QnA>, QnAValidationErrors> => {
+  const question = makeNonEmptyString(unvalidatedQuestion);
+  const answer = makeNonEmptyString(unvalidatedAnswer);
+
+  const errors: QnAValidationErrors = {};
+  if (!question.ok || !answer.ok) {
+    if (!question.ok) errors.question = "EMPTY_QUESTION";
+    if (!answer.ok) errors.answer = "EMPTY_ANSWER";
+    return error(errors);
+  }
+
+  return ok({
+    ...qna,
+    question: question.value,
+    answer: answer.value,
   });
 };

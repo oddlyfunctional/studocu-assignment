@@ -1,5 +1,6 @@
 "use client";
-import { NewQnA } from "@/app/components/NewQnA/NewQnA";
+import { createQnA, updateQnA } from "@/actions/qnaActions";
+import { QnAForm } from "@/app/components/QnAForm";
 import { QnAList } from "@/app/components/QnAList/QnAList";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import { pluralize } from "@/lib/pluralize";
@@ -26,6 +27,21 @@ export const App = () => {
   const removeItem = (item: QnA) =>
     setItems((items) => items.filter((i) => i.id !== item.id));
 
+  const [editing, setEditing] = useState<QnA | null>(null);
+  const editItem = (item: QnA) => setEditing(item);
+  const updateItem = (item: QnA) => {
+    setItems((items) =>
+      items.map((i) => {
+        if (i.id === item.id) {
+          return { ...item };
+        } else {
+          return i;
+        }
+      })
+    );
+    setEditing(null);
+  };
+
   const sortQnAs = () =>
     setItems((items) =>
       [...items].sort((a, b) => compareStrings(a.question, b.question))
@@ -47,12 +63,25 @@ export const App = () => {
 
       <div>
         <h2>Created questions</h2>
-        <QnAList items={items} onRemove={removeItem} />
+        <QnAList items={items} onRemove={removeItem} onEdit={editItem} />
         <button onClick={sortQnAs}>Sort questions</button>
         <button onClick={() => setItems([])}>Remove questions</button>
       </div>
 
-      <NewQnA onSubmit={addNewItem} />
+      {editing ? (
+        <QnAForm
+          initialState={editing}
+          action={(params) => updateQnA(editing, params)}
+          onSubmit={updateItem}
+          submitLabel="Update question"
+        />
+      ) : (
+        <QnAForm
+          action={createQnA}
+          onSubmit={addNewItem}
+          submitLabel="Create question"
+        />
+      )}
     </main>
   );
 };
