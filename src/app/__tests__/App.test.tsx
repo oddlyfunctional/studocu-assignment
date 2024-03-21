@@ -41,7 +41,7 @@ describe("App", () => {
     await userEvent.type(screen.getByLabelText("Answer"), "An answer");
     await userEvent.click(screen.getByText("Create question"));
 
-    await userEvent.click(screen.getByText("Sort questions"));
+    await userEvent.click(screen.getByText("Sort"));
 
     expect(getAllItems()).toEqual(["a question", "How to add a question?"]);
   });
@@ -50,7 +50,7 @@ describe("App", () => {
     const userEvent = UserEvent.setup();
     render(<App />);
 
-    await userEvent.click(screen.getByText("Remove questions"));
+    await userEvent.click(screen.getByText("Remove all"));
     expect(screen.getByRole("main")).toHaveTextContent("no questions");
 
     expect(screen.queryByRole("term")).not.toBeInTheDocument;

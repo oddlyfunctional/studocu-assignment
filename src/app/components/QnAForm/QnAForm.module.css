@@ -1,0 +1,28 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+.input {
+  border: 1px solid #333;
+  border-radius: 5px;
+  display: block;
+  margin-top: 0.5em;
+  padding: 1em;
+  width: 100%;
+}
+
+.input:focus {
+  border: 3px solid rgb(155, 217, 255);
+  outline: none;
+}
+
+.submit {
+  margin-top: 1em;
+}

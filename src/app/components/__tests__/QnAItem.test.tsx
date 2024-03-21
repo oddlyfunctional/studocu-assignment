@@ -1,4 +1,4 @@
-import { QnAItem } from "@/app/components/QnAItem";
+import { QnAItem } from "@/app/components/QnAItem/QnAItem";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";

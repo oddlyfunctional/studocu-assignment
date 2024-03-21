@@ -1,10 +1,12 @@
 "use client";
 
-import { ErrorMessage } from "@/app/components/ErrorMessage";
+import { Button } from "@/app/components/Button/Button";
+import { ErrorMessage } from "@/app/components/ErrorMessage/ErrorMessage";
 import type { QnA, QnAValidationErrors } from "@/domain/core";
 import { useForm } from "@/lib/hooks";
 import type { Result } from "@/lib/result";
 import { useEffect, useState } from "react";
+import styles from "./QnAForm.module.css";
 
 export type Fields = {
   question: string;
@@ -48,12 +50,14 @@ export const QnAForm = ({
           setErrors(qna.error);
         }
       })}
+      className={styles.form}
     >
       <label>
-        Question
+        <div className={styles.label}>Question</div>
         <input
           {...register("question", {
             type: "text",
+            className: styles.input,
           })}
         />
       </label>
@@ -62,12 +66,18 @@ export const QnAForm = ({
       )}
 
       <label>
-        Answer
-        <textarea {...register("answer")} />
+        <div className={styles.label}>Answer</div>
+        <textarea
+          {...register("answer", {
+            className: styles.input,
+          })}
+        />
       </label>
       {errors.answer && <ErrorMessage error={errorMessages[errors.answer]} />}
 
-      <button type="submit">{submitLabel}</button>
+      <Button kind="primary" type="submit" className={styles.submit}>
+        {submitLabel}
+      </Button>
     </form>
   );
 };

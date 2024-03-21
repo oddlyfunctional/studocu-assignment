@@ -1,0 +1,51 @@
+.button {
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 0.5em 1em;
+}
+
+.button:focus {
+  box-shadow: 0 0 0 3px rgb(155, 217, 255);
+  outline: none;
+}
+
+.primary {
+  background-color: rgb(68, 106, 167);
+  color: white;
+}
+
+.primary:hover {
+  background-color: rgb(135, 159, 197);
+}
+
+.primary:active {
+  background-color: rgb(15, 58, 126);
+}
+
+.secondary {
+  background-color: rgb(54, 56, 57);
+  color: white;
+}
+
+.secondary:hover {
+  background-color: rgb(106, 108, 109);
+}
+
+.secondary:active {
+  background-color: rgb(27, 28, 29);
+}
+
+.danger {
+  background-color: rgb(251, 79, 79);
+  color: white;
+}
+
+.danger:hover {
+  background-color: rgb(255, 144, 144);
+}
+
+.danger:active {
+  background-color: rgb(155, 30, 30);
+  color: white;
+}

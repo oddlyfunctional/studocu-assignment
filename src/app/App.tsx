@@ -1,10 +1,12 @@
 "use client";
 import { createQnA, updateQnA } from "@/actions/qnaActions";
-import { QnAForm } from "@/app/components/QnAForm";
-import { QnAItem } from "@/app/components/QnAItem";
+import { Button } from "@/app/components/Button/Button";
+import { QnAForm } from "@/app/components/QnAForm/QnAForm";
+import { QnAItem } from "@/app/components/QnAItem/QnAItem";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import { pluralize } from "@/lib/pluralize";
 import { useState } from "react";
+import styles from "./App.module.css";
 
 const compareStrings = (a: string, b: string) => {
   a = a.toLowerCase();
@@ -48,51 +50,78 @@ export const App = () => {
     );
 
   return (
-    <main>
-      <aside>
-        Here you can find{" "}
-        {pluralize(items.length, {
-          0: "no questions",
-          1: "1 question",
-          default: "{count} questions",
-        })}
-        . Feel free to create your own questions!
-      </aside>
+    <div className={styles.wrapper}>
+      <main className={styles.container}>
+        <h1 className={styles.title}>The awesome Q/A tool</h1>
 
-      <h1>The awesome Q/A tool</h1>
+        <div className={styles.content}>
+          <aside className={styles.description}>
+            Here you can find{" "}
+            {pluralize(items.length, {
+              0: "no questions",
+              1: "1 question",
+              default: "{count} questions",
+            })}
+            . Feel free to create your own questions!
+          </aside>
 
-      <div>
-        <h2>Created questions</h2>
-        <dl role="list">
-          {items.length === 0 && <div>{"No questions yet :-("}</div>}
-          {items.map((item) => (
-            <QnAItem
-              item={item}
-              key={item.id}
-              onRemove={removeItem}
-              onEdit={editItem}
-              editing={item === editing}
-            />
-          ))}
-        </dl>
-        <button onClick={sortQnAs}>Sort questions</button>
-        <button onClick={() => setItems([])}>Remove questions</button>
-      </div>
+          <div className={styles.qna}>
+            <div>
+              <header className={styles.header}>
+                <h2 className={styles["header-title"]}>Created questions</h2>
+                <div className={styles["header-actions"]}>
+                  <Button kind="secondary" onClick={sortQnAs}>
+                    Sort
+                  </Button>
+                  <Button kind="danger" onClick={() => setItems([])}>
+                    Remove all
+                  </Button>
+                </div>
+              </header>
 
-      {editing ? (
-        <QnAForm
-          initialState={editing}
-          action={(params) => updateQnA(editing, params)}
-          onSubmit={updateItem}
-          submitLabel="Update question"
-        />
-      ) : (
-        <QnAForm
-          action={createQnA}
-          onSubmit={addNewItem}
-          submitLabel="Create question"
-        />
-      )}
-    </main>
+              <dl role="list">
+                {items.length === 0 && (
+                  <div className={styles["no-questions"]}>
+                    {"No questions yet 🙁"}
+                  </div>
+                )}
+                {items.map((item) => (
+                  <QnAItem
+                    item={item}
+                    key={item.id}
+                    onRemove={removeItem}
+                    onEdit={editItem}
+                    editing={item === editing}
+                  />
+                ))}
+              </dl>
+            </div>
+
+            <div className={styles.form}>
+              {editing ? (
+                <>
+                  <h2>Edit question</h2>
+                  <QnAForm
+                    initialState={editing}
+                    action={(params) => updateQnA(editing, params)}
+                    onSubmit={updateItem}
+                    submitLabel="Update question"
+                  />
+                </>
+              ) : (
+                <>
+                  <h2>Create a new question</h2>
+                  <QnAForm
+                    action={createQnA}
+                    onSubmit={addNewItem}
+                    submitLabel="Create question"
+                  />
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
