@@ -3,9 +3,10 @@ import { createQnA, updateQnA } from "@/actions/qnaActions";
 import { Button } from "@/app/components/Button/Button";
 import { QnAForm } from "@/app/components/QnAForm/QnAForm";
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
+import { Tooltip } from "@/app/components/Tooltip/Tooltip";
 import type { NonEmptyString, QnA } from "@/domain/core";
 import { pluralize } from "@/lib/pluralize";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./App.module.css";
 
 const compareStrings = (a: string, b: string) => {
@@ -66,6 +67,9 @@ export const App = () => {
     setEditing(null);
   };
 
+  const qnaListTitleAnchor = useRef(null);
+  const formTitleAnchor = useRef(null);
+
   return (
     <div className={styles.wrapper}>
       <main className={styles.container}>
@@ -85,7 +89,12 @@ export const App = () => {
           <div className={styles.qna}>
             <div>
               <header className={styles.header}>
-                <h2 className={styles["header-title"]}>Created questions</h2>
+                <h2 ref={qnaListTitleAnchor} className={styles["header-title"]}>
+                  Created questions
+                </h2>
+                <Tooltip anchorRef={qnaListTitleAnchor}>
+                  Here you can find the created questions and their answers.
+                </Tooltip>
                 <div className={styles["header-actions"]}>
                   <Button kind="secondary" onClick={sortQnAs}>
                     Sort
@@ -117,7 +126,13 @@ export const App = () => {
             <div className={styles.form}>
               {editing ? (
                 <>
-                  <h2>Edit question</h2>
+                  <h2>
+                    <span ref={formTitleAnchor}>Edit question</span>
+                  </h2>
+                  <Tooltip anchorRef={formTitleAnchor}>
+                    Here you can edit a question and its answer.
+                  </Tooltip>
+
                   <QnAForm
                     initialState={editing}
                     action={(params) => updateQnA(editing, params)}
@@ -127,7 +142,13 @@ export const App = () => {
                 </>
               ) : (
                 <>
-                  <h2>Create a new question</h2>
+                  <h2>
+                    <span ref={formTitleAnchor}>Create a new question</span>
+                  </h2>
+                  <Tooltip anchorRef={formTitleAnchor}>
+                    Here you can create new questions and their answers.
+                  </Tooltip>
+
                   <QnAForm
                     action={createQnA}
                     onSubmit={addNewItem}

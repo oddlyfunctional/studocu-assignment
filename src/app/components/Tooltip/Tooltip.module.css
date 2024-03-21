@@ -1,0 +1,23 @@
+.tooltip {
+  background-color: white;
+  border: black 1px solid;
+  font-size: 12px;
+  font-weight: normal;
+  max-width: 25em;
+  padding: 1em;
+  position: fixed;
+  z-index: 10;
+}
+
+.tooltip:after {
+  background: white;
+  border-bottom: inherit;
+  border-right: inherit;
+  content: "";
+  height: 10px;
+  left: 50%;
+  position: absolute;
+  top: 0;
+  transform: translateY(calc(-50% - 1px)) translateX(-50%) rotate(-135deg);
+  width: 10px;
+}
