@@ -20,6 +20,7 @@ export const App = () => {
     },
   ]);
   const addNewQnA = (item: QnA) => setItems((items) => [...items, item]);
+
   const sortQnAs = () =>
     setItems((items) =>
       [...items].sort((a, b) => compareStrings(a.question, b.question))

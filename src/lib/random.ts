@@ -1,4 +1,5 @@
 import type { Uuid } from "@/domain/core";
+import crypto from "crypto";
 
 export type Random = {
   nextUuid: () => Uuid;
