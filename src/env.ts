@@ -7,6 +7,14 @@ export type Env = {
   db: Db;
 };
 
+export type EnvWithoutPersistence = {
+  clock: Clock;
+};
+
+export const loadEnvWithoutPersistence = (): EnvWithoutPersistence => ({
+  clock,
+});
+
 declare global {
   var env: Env | undefined;
 }
