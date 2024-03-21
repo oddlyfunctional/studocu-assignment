@@ -1,10 +1,15 @@
 "use client";
-import { createQnA, updateQnA } from "@/actions/qnaActions";
+import {
+  createQnA,
+  deleteAllQnAs,
+  deleteQnA,
+  updateQnA,
+} from "@/actions/qnaActions";
 import { Button } from "@/app/components/Button/Button";
 import { QnAForm } from "@/app/components/QnAForm/QnAForm";
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
 import { Tooltip } from "@/app/components/Tooltip/Tooltip";
-import type { NonEmptyString, QnA } from "@/domain/core";
+import type { QnA } from "@/domain/core";
 import { pluralize } from "@/lib/pluralize";
 import { useRef, useState } from "react";
 import styles from "./App.module.css";
@@ -17,21 +22,17 @@ const compareStrings = (a: string, b: string) => {
   return 0;
 };
 
-export const App = () => {
-  const [items, setItems] = useState<QnA[]>([
-    {
-      id: "blankslate",
-      question: "How to add a question?" as NonEmptyString,
-      answer: "Just use the form below!" as NonEmptyString,
-      createdAt: new Date(),
-    },
-  ]);
+export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
+  const [items, setItems] = useState<QnA[]>(preloadedItems);
   const addNewItem = (item: QnA) => setItems((items) => [...items, item]);
   const removeItem = (item: QnA) => {
+    // update UI optimistically
     setItems((items) => items.filter((i) => i.id !== item.id));
     if (editing === item) {
       setEditing(null);
     }
+
+    deleteQnA(item.id);
   };
 
   const [editing, setEditing] = useState<QnA | null>(null);
@@ -63,8 +64,10 @@ export const App = () => {
     );
 
   const removeAll = () => {
+    // update UI optimistically
     setItems([]);
     setEditing(null);
+    deleteAllQnAs();
   };
 
   const qnaListTitleAnchor = useRef(null);

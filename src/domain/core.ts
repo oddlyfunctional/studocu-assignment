@@ -1,5 +1,4 @@
 import type { Clock } from "@/lib/clock";
-import type { Random } from "@/lib/random";
 import { error, ok, type Result } from "@/lib/result";
 
 // https://egghead.io/blog/using-branded-types-in-typescript
@@ -15,9 +14,7 @@ export const makeNonEmptyString = (
   return ok(s as NonEmptyString);
 };
 
-export type Uuid = string;
-
-export type QnAId = Uuid;
+export type QnAId = Branded<number, "QnAId">;
 export type QnA = {
   id: QnAId;
   question: NonEmptyString;
@@ -34,9 +31,8 @@ export const createQnA = (
     question: unvalidatedQuestion,
     answer: unvalidatedAnswer,
   }: { question: string; answer: string },
-  random: Random,
   clock: Clock
-): Result<Readonly<QnA>, QnAValidationErrors> => {
+): Result<Omit<QnA, "id">, QnAValidationErrors> => {
   const question = makeNonEmptyString(unvalidatedQuestion);
   const answer = makeNonEmptyString(unvalidatedAnswer);
 
@@ -50,7 +46,6 @@ export const createQnA = (
   return ok({
     question: question.value,
     answer: answer.value,
-    id: random.nextUuid(),
     createdAt: clock.now(),
   });
 };
@@ -61,7 +56,7 @@ export const updateQnA = (
     question: unvalidatedQuestion,
     answer: unvalidatedAnswer,
   }: { question: string; answer: string }
-): Result<Readonly<QnA>, QnAValidationErrors> => {
+): Result<Pick<QnA, "id" | "question" | "answer">, QnAValidationErrors> => {
   const question = makeNonEmptyString(unvalidatedQuestion);
   const answer = makeNonEmptyString(unvalidatedAnswer);
 
@@ -73,8 +68,20 @@ export const updateQnA = (
   }
 
   return ok({
-    ...qna,
+    id: qna.id,
     question: question.value,
     answer: answer.value,
   });
+};
+
+export type QnARepository = {
+  getAll: () => Promise<Result<QnA[], unknown>>;
+  create: (
+    qna: Pick<QnA, "question" | "answer" | "createdAt">
+  ) => Promise<Result<QnAId, unknown>>;
+  update: (
+    qna: Pick<QnA, "id" | "question" | "answer">
+  ) => Promise<Result<void, unknown>>;
+  delete: (id: QnAId) => Promise<Result<void, unknown>>;
+  deleteAll: () => Promise<Result<void, unknown>>;
 };

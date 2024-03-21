@@ -1,32 +1,51 @@
 import { App } from "@/app/App";
+import type { NonEmptyString, QnA, QnAId } from "@/domain/core";
+import { ok } from "@/lib/result";
 import "@testing-library/jest-dom";
 import { render, screen, within } from "@testing-library/react";
 import UserEvent from "@testing-library/user-event";
 
+let id = 0;
+jest.mock("../../actions/qnaActions", () => ({
+  getAllQnAs: async () => [],
+  createQnA: async (params: { question: string; answer: string }) =>
+    ok({
+      ...params,
+      id: id++,
+      createdAt: new Date(),
+    }),
+  updateQnA: async (qna: QnA, params: { question: string; answer: string }) =>
+    ok({
+      ...qna,
+      ...params,
+    }),
+  deleteQnA: async () => {},
+  deleteAllQnAs: async () => {},
+}));
 describe("App", () => {
   const getAllItems = () =>
     screen
       .getAllByRole("term")
       .map((el) => within(el).getByLabelText("question").textContent);
 
-  it("initializes app with a default question", () => {
-    render(<App />);
-    expect(screen.getByRole("term")).toHaveTextContent(
-      "How to add a question?"
-    );
-    expect(screen.getByRole("main")).toHaveTextContent("1 question");
-  });
+  const qna: QnA = {
+    id: -1 as QnAId,
+    question: "How to add a question?" as NonEmptyString,
+    answer: "Just use the form below!" as NonEmptyString,
+    createdAt: new Date(),
+  };
 
   it("adds new question", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[]} />);
 
+    expect(screen.getByRole("main")).toHaveTextContent("no questions");
     await userEvent.type(screen.getByLabelText("Question"), "New question");
     await userEvent.type(screen.getByLabelText("Answer"), "New answer");
     await userEvent.click(screen.getByText("Create question"));
 
-    expect(getAllItems()).toEqual(["How to add a question?", "New question"]);
-    expect(screen.getByRole("main")).toHaveTextContent("2 questions");
+    expect(getAllItems()).toEqual(["New question"]);
+    expect(screen.getByRole("main")).toHaveTextContent("1 question");
 
     // and cleans the form
     expect(screen.getByLabelText("Question")).toHaveValue("");
@@ -35,7 +54,7 @@ describe("App", () => {
 
   it("sorts the questions alphabetically ignoring case", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[qna]} />);
 
     await userEvent.type(screen.getByLabelText("Question"), "a question");
     await userEvent.type(screen.getByLabelText("Answer"), "An answer");
@@ -43,12 +62,12 @@ describe("App", () => {
 
     await userEvent.click(screen.getByText("Sort"));
 
-    expect(getAllItems()).toEqual(["a question", "How to add a question?"]);
+    expect(getAllItems()).toEqual(["a question", qna.question]);
   });
 
   it("removes all questions", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[qna]} />);
 
     await userEvent.click(screen.getByText("Remove all"));
     expect(screen.getByRole("main")).toHaveTextContent("no questions");
@@ -59,13 +78,13 @@ describe("App", () => {
 
   it("removes specific question", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[qna]} />);
 
     await userEvent.type(screen.getByLabelText("Question"), "New question");
     await userEvent.type(screen.getByLabelText("Answer"), "New answer");
     await userEvent.click(screen.getByText("Create question"));
 
-    const item = screen.getByText("How to add a question?");
+    const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Remove"));
 
     expect(getAllItems()).toEqual(["New question"]);
@@ -73,14 +92,12 @@ describe("App", () => {
 
   it("edits question", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[qna]} />);
 
-    const item = screen.getByText("How to add a question?");
+    const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Edit"));
 
-    expect(screen.getByLabelText("Question")).toHaveValue(
-      "How to add a question?"
-    );
+    expect(screen.getByLabelText("Question")).toHaveValue(qna.question);
     expect(screen.getByLabelText("Answer")).toHaveValue(
       "Just use the form below!"
     );
@@ -95,9 +112,9 @@ describe("App", () => {
 
   it("clears editing item when removing it", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[qna]} />);
 
-    const item = screen.getByText("How to add a question?");
+    const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Edit"));
     await userEvent.click(within(item.parentElement!).getByText("Remove"));
 
@@ -107,9 +124,9 @@ describe("App", () => {
 
   it("clears editing item when removing all items", async () => {
     const userEvent = UserEvent.setup();
-    render(<App />);
+    render(<App preloadedItems={[qna]} />);
 
-    const item = screen.getByText("How to add a question?");
+    const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Edit"));
     await userEvent.click(screen.getByText("Remove all"));
 

@@ -1,12 +1,12 @@
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
-import type { NonEmptyString, QnA } from "@/domain/core";
+import type { NonEmptyString, QnA, QnAId } from "@/domain/core";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 describe("QnAItem", () => {
   const qna: QnA = {
-    id: "some id",
+    id: 1 as QnAId,
     question: "some question" as NonEmptyString,
     answer: "some answer" as NonEmptyString,
     createdAt: new Date(),
