@@ -6,6 +6,7 @@ import {
   updateQnA,
 } from "@/actions/qnaActions";
 import { Button } from "@/app/components/Button/Button";
+import { ErrorPage } from "@/app/components/ErrorPage/ErrorPage";
 import { LocaleSwitcher } from "@/app/components/LocaleSwitcher/LocaleSwitcher";
 import { QnAForm } from "@/app/components/QnAForm/QnAForm";
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
@@ -14,6 +15,7 @@ import type { QnA } from "@/domain/core";
 import * as I18n from "@/i18n/i18n";
 import { useTranslation } from "@/lib/hooks";
 import { pluralize } from "@/lib/pluralize";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { useRouter } from "next/navigation";
 import { useReducer, useRef } from "react";
 import styles from "./App.module.css";
@@ -225,7 +227,9 @@ export const AppContainer = ({
   };
   return (
     <I18n.I18nContext.Provider value={{ ...i18nContext, setLocale }}>
-      <App preloadedItems={preloadedItems} />
+      <ErrorBoundary errorComponent={ErrorPage}>
+        <App preloadedItems={preloadedItems} />
+      </ErrorBoundary>
     </I18n.I18nContext.Provider>
   );
 };
