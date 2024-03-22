@@ -2,6 +2,11 @@ import { getDictionary, getLocale, getLocales } from "@/actions/i18nActions";
 import { getAllQnAs } from "@/actions/qnaActions";
 import { AppContainer } from "@/app/App";
 import type { NonEmptyString, QnAId } from "@/domain/core";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Q&A | Find the A to your Q here!",
+};
 
 const blankslate = [
   {
