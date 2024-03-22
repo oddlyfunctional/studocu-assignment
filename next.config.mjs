@@ -7,6 +7,7 @@ const nextConfig = {
     defaultLocale: "en",
     localeDetection: false
   },
+  output: 'standalone'
 };
 
 export default nextConfig;

@@ -19,6 +19,15 @@ After that just navigate to http://localhost:3000 on your browser!
 
 **Note:** the application can also be run with `npm start`, but it needs to be built first with `npm run build`.
 
+### With Docker
+
+```bash
+docker build -t studocu-assignment .
+docker run -p 3000:3000 studocu-assignment
+```
+
+Then navigate to http://localhost:3000
+
 ### With persistence
 
 The application runs with the persistence disabled by default. If you want to enable it, please follow these instructions:
