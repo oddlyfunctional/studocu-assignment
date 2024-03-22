@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Q&A Sample Application
 
-## Getting Started
+This project was created as an assignment for the recruitment process at [studocu](https://www.studocu.com).
 
-First, run the development server:
+## How to run
+
+The simplest way to run the application is with the following command:
 
 ```bash
+git clone git@github.com:oddlyfunctional/studocu-assignment.git
+cd studocu-assignment
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After that just navigate to http://localhost:3000 on your browser!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Note:** the application can also be run with `npm start`, but it needs to be built first with `npm run build`.
 
-## Learn More
+### With persistence
 
-To learn more about Next.js, take a look at the following resources:
+The application runs with the persistence disabled by default. If you want to enable it, please follow these instructions:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Install the PostgreSQL client (e.g. for OSX, this can be done with `brew install postgresql`)
+2. Add a `.env.local` file to the root of the project with the following content (please replace the specific values according to your configuration):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+DATABASE_URL="postgres://username@localhost:5432/studocu?sslmode=disable"
+```
 
-## Deploy on Vercel
+3. Run `npm run db:setup`.
+4. Start the application with the command `npm run dev:persistence`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Running tests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You can run all unit tests with:
+
+```bash
+npm test
+```
+
+For the E2E tests, due to some issues configuring Playwright, the process is slightly more complicated:
+
+```bash
+# First prepare the database for running tests.
+# Note that a .env.test file similar to .env.local is required.
+npm run db:test:setup
+
+# Boot the application
+NODE_ENV=test npm run dev:persistence
+
+# In another shell, run the tests
+npm run e2e
+```
+
+**Note:** For now there is only 1 E2E test, testing the application with the persistence layer enabled.
