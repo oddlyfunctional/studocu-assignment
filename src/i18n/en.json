@@ -23,5 +23,8 @@
   "Q&A_REMOVE_BUTTON": "Remove",
   "en": "English",
   "pt": "Portuguese",
-  "ja": "Japanese"
+  "ja": "Japanese",
+  "NO_QUESTIONS": "no questions",
+  "1_QUESTION": "1 question",
+  "N_QUESTIONS": "{count} questions"
 }

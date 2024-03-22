@@ -23,5 +23,8 @@
   "Q&A_REMOVE_BUTTON": "削除",
   "en": "英語",
   "pt": "ポルトラグ語",
-  "ja": "日本語"
+  "ja": "日本語",
+  "NO_QUESTIONS": "質問なし",
+  "1_QUESTION": "1つの質問",
+  "N_QUESTIONS": "{count}つの質問"
 }

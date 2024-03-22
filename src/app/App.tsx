@@ -121,9 +121,9 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
           <aside className={styles.description}>
             {t("DESCRIPTION", {
               questions: pluralize(items.length, {
-                0: "no questions",
-                1: "1 question",
-                default: "{count} questions",
+                0: t("NO_QUESTIONS"),
+                1: t("1_QUESTION"),
+                default: t("N_QUESTIONS"),
               }),
             })}
           </aside>
