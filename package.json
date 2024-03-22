@@ -8,14 +8,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "e2e": "playwright test",
     "tsc": "tsc --noEmit",
     "tsc:watch": "tsc --noEmit --watch",
     "db:drop": "dbmate --env-file .env.local drop",
     "db:create": "dbmate --env-file .env.local create",
     "db:up": "dbmate --env-file .env.local up",
-    "db:down": "dbmate --env-file .env.local down"
+    "db:down": "dbmate --env-file .env.local down",
+    "db:test:drop": "dbmate --env-file .env.test drop",
+    "db:test:create": "dbmate --env-file .env.test create",
+    "db:test:up": "dbmate --env-file .env.test up",
+    "db:test:down": "dbmate --env-file .env.test down",
+    "db:test:setup": "npm run db:test:drop && npm run db:test:create && npm run db:test:up"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.5.4",
@@ -28,6 +34,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.42.1",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
@@ -42,6 +49,7 @@
     "eslint-config-next": "14.1.4",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "playwright": "^1.42.1",
     "typescript": "^5"
   }
 }
