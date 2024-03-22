@@ -1,5 +1,6 @@
+import { getDictionary, getLocale, getLocales } from "@/actions/i18nActions";
 import { getAllQnAs } from "@/actions/qnaActions";
-import { App } from "@/app/App";
+import { AppContainer } from "@/app/App";
 import type { NonEmptyString, QnAId } from "@/domain/core";
 
 const blankslate = [
@@ -13,5 +14,13 @@ const blankslate = [
 
 export default async function Home() {
   const items = await getAllQnAs();
-  return <App preloadedItems={items.length === 0 ? blankslate : items} />;
+  const locale = await getLocale();
+  const supportedLocales = await getLocales();
+  const dictionary = await getDictionary();
+  return (
+    <AppContainer
+      preloadedItems={items.length === 0 ? blankslate : items}
+      i18nContext={{ locale, supportedLocales, dictionary }}
+    />
+  );
 }

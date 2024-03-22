@@ -1,5 +1,6 @@
-import { App } from "@/app/App";
+import { App as OriginalApp } from "@/app/App";
 import type { NonEmptyString, QnA, QnAId } from "@/domain/core";
+import { I18nContext, type Context } from "@/i18n/i18n";
 import { ok } from "@/lib/result";
 import "@testing-library/jest-dom";
 import { render, screen, within } from "@testing-library/react";
@@ -23,6 +24,29 @@ jest.mock("../../actions/qnaActions", () => ({
   deleteAllQnAs: async () => {},
 }));
 describe("App", () => {
+  const i18nContext: Context = {
+    locale: "en",
+    supportedLocales: ["en"],
+    setLocale: () => {},
+    dictionary: {},
+  };
+
+  beforeAll(async () => {
+    i18nContext.dictionary = (
+      await import(`../../i18n/en.json`, {
+        assert: { type: "json" },
+      })
+    ).default;
+  });
+
+  const App = (props: Parameters<typeof OriginalApp>[0]) => {
+    return (
+      <I18nContext.Provider value={i18nContext}>
+        <OriginalApp {...props} />
+      </I18nContext.Provider>
+    );
+  };
+
   const getAllItems = () =>
     screen
       .getAllByRole("term")

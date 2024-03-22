@@ -1,4 +1,6 @@
+import { I18nContext, translate } from "@/i18n/i18n";
 import {
+  useContext,
   useState,
   type ChangeEvent,
   type Dispatch,
@@ -96,4 +98,9 @@ export const useForm = <T extends Record<string, any>>(initialState: T) => {
     };
 
   return { register, onSubmit, setFields };
+};
+
+export const useTranslation = () => {
+  const context = useContext(I18nContext);
+  return translate(context.dictionary);
 };

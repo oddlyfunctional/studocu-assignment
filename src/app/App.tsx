@@ -6,11 +6,15 @@ import {
   updateQnA,
 } from "@/actions/qnaActions";
 import { Button } from "@/app/components/Button/Button";
+import { LocaleSwitcher } from "@/app/components/LocaleSwitcher/LocaleSwitcher";
 import { QnAForm } from "@/app/components/QnAForm/QnAForm";
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
 import { Tooltip } from "@/app/components/Tooltip/Tooltip";
 import type { QnA } from "@/domain/core";
+import * as I18n from "@/i18n/i18n";
+import { useTranslation } from "@/lib/hooks";
 import { pluralize } from "@/lib/pluralize";
+import { useRouter } from "next/navigation";
 import { useReducer, useRef } from "react";
 import styles from "./App.module.css";
 
@@ -105,40 +109,43 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
   const qnaListTitleAnchor = useRef(null);
   const formTitleAnchor = useRef(null);
 
+  const t = useTranslation();
+
   return (
     <div className={styles.wrapper}>
+      <LocaleSwitcher />
       <main className={styles.container}>
-        <h1 className={styles.title}>The awesome Q/A tool</h1>
+        <h1 className={styles.title}>{t("PAGE_TITLE")}</h1>
 
         <div className={styles.content}>
           <aside className={styles.description}>
-            Here you can find{" "}
-            {pluralize(items.length, {
-              0: "no questions",
-              1: "1 question",
-              default: "{count} questions",
+            {t("DESCRIPTION", {
+              questions: pluralize(items.length, {
+                0: "no questions",
+                1: "1 question",
+                default: "{count} questions",
+              }),
             })}
-            . Feel free to create your own questions!
           </aside>
 
           <div className={styles.qna}>
             <div>
               <header className={styles.header}>
                 <h2 ref={qnaListTitleAnchor} className={styles["header-title"]}>
-                  Created questions
+                  {t("Q&A_LIST_TITLE")}
                 </h2>
                 <Tooltip anchorRef={qnaListTitleAnchor}>
-                  Here you can find the created questions and their answers.
+                  {t("Q&A_LIST_TOOLTIP")}
                 </Tooltip>
                 <div className={styles["header-actions"]}>
                   <Button
                     kind="secondary"
                     onClick={() => dispatch(Actions.sort())}
                   >
-                    Sort
+                    {t("SORT_BUTTON")}
                   </Button>
                   <Button kind="danger" onClick={removeAll}>
-                    Remove all
+                    {t("REMOVE_ALL_BUTTON")}
                   </Button>
                 </div>
               </header>
@@ -146,7 +153,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
               <dl role="list">
                 {items.length === 0 && (
                   <div className={styles["no-questions"]}>
-                    {"No questions yet 🙁"}
+                    {t("Q&A_LIST_BLANKSLATE")}
                   </div>
                 )}
                 {items.map((item) => (
@@ -165,32 +172,32 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
               {editing ? (
                 <>
                   <h2>
-                    <span ref={formTitleAnchor}>Edit question</span>
+                    <span ref={formTitleAnchor}>{t("EDIT_Q&A_TITLE")}</span>
                   </h2>
                   <Tooltip anchorRef={formTitleAnchor}>
-                    Here you can edit a question and its answer.
+                    {t("EDIT_Q&A_TOOLTIP")}
                   </Tooltip>
 
                   <QnAForm
                     initialState={editing}
                     action={(params) => updateQnA(editing, params)}
                     onSubmit={(item) => dispatch(Actions.update(item))}
-                    submitLabel="Update question"
+                    submitLabel={t("EDIT_Q&A_SUBMIT")}
                   />
                 </>
               ) : (
                 <>
                   <h2>
-                    <span ref={formTitleAnchor}>Create a new question</span>
+                    <span ref={formTitleAnchor}>{t("NEW_Q&A_TITLE")}</span>
                   </h2>
                   <Tooltip anchorRef={formTitleAnchor}>
-                    Here you can create new questions and their answers.
+                    {t("NEW_Q&A_TOOLTIP")}
                   </Tooltip>
 
                   <QnAForm
                     action={createQnA}
                     onSubmit={(item) => dispatch(Actions.add(item))}
-                    submitLabel="Create question"
+                    submitLabel={t("NEW_Q&A_SUBMIT")}
                   />
                 </>
               )}
@@ -199,5 +206,26 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
         </div>
       </main>
     </div>
+  );
+};
+
+export const AppContainer = ({
+  preloadedItems,
+  i18nContext,
+}: {
+  preloadedItems: QnA[];
+  i18nContext: Pick<I18n.Context, "locale" | "supportedLocales" | "dictionary">;
+}) => {
+  const router = useRouter();
+  const setLocale = (locale: string) => {
+    if (!i18nContext.supportedLocales.includes(locale))
+      throw new Error(`Unsupported locale: ${locale}`);
+    document.cookie = `NEXT_LOCALE=${locale}`;
+    router.refresh();
+  };
+  return (
+    <I18n.I18nContext.Provider value={{ ...i18nContext, setLocale }}>
+      <App preloadedItems={preloadedItems} />
+    </I18n.I18nContext.Provider>
   );
 };

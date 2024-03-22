@@ -3,7 +3,8 @@
 import { Button } from "@/app/components/Button/Button";
 import { ErrorMessage } from "@/app/components/ErrorMessage/ErrorMessage";
 import type { QnA, QnAValidationErrors } from "@/domain/core";
-import { useForm } from "@/lib/hooks";
+
+import { useForm, useTranslation } from "@/lib/hooks";
 import type { Result } from "@/lib/result";
 import { useEffect, useRef, useState } from "react";
 import styles from "./QnAForm.module.css";
@@ -18,11 +19,6 @@ const defaultState: Fields = {
   question: "",
   answer: "",
   delay: false,
-};
-
-const errorMessages = {
-  EMPTY_QUESTION: "Please type a question.",
-  EMPTY_ANSWER: "Please type an answer.",
 };
 
 export const QnAForm = ({
@@ -51,6 +47,7 @@ export const QnAForm = ({
   });
   useEffect(() => setFields({ ...initialState, delay: false }), [initialState]);
   const [errors, setErrors] = useState<QnAValidationErrors>({});
+  const t = useTranslation();
 
   return (
     <form
@@ -75,7 +72,7 @@ export const QnAForm = ({
     >
       <fieldset disabled={pending} className={styles.form}>
         <label>
-          <div className={styles.label}>Question</div>
+          <div className={styles.label}>{t("Q&A_FORM_QUESTION_LABEL")}</div>
           <input
             {...register("question", {
               type: "text",
@@ -83,12 +80,10 @@ export const QnAForm = ({
             })}
           />
         </label>
-        {errors.question && (
-          <ErrorMessage error={errorMessages[errors.question]} />
-        )}
+        {errors.question && <ErrorMessage error={t(errors.question)} />}
 
         <label>
-          <div className={styles.label}>Answer</div>
+          <div className={styles.label}>{t("Q&A_FORM_ANSWER_LABEL")}</div>
           <textarea
             {...register("answer", {
               className: styles.input,
@@ -107,7 +102,7 @@ export const QnAForm = ({
             })}
           />
         </label>
-        {errors.answer && <ErrorMessage error={errorMessages[errors.answer]} />}
+        {errors.answer && <ErrorMessage error={t(errors.answer)} />}
 
         <label className={styles["delay-checkbox"]}>
           <input
@@ -116,11 +111,11 @@ export const QnAForm = ({
               extractValue: (ev) => ev.currentTarget.checked,
             })}
           />
-          Force delay
+          {t("Q&A_FORM_DELAY_CHECKBOX")}
         </label>
 
         <Button kind="primary" type="submit" className={styles.submit}>
-          {pending ? "Submitting..." : submitLabel}
+          {pending ? t("SUBMITTING") : submitLabel}
         </Button>
       </fieldset>
     </form>

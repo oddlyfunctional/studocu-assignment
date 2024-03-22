@@ -2,6 +2,7 @@
 
 import { Button } from "@/app/components/Button/Button";
 import type { QnA } from "@/domain/core";
+import { useTranslation } from "@/lib/hooks";
 import { useState } from "react";
 import styles from "./QnAItem.module.css";
 
@@ -18,6 +19,7 @@ export const QnAItem = ({
 }) => {
   const [showAnswer, setShowAnswer] = useState(false);
   const toggleAnswer = () => setShowAnswer((showAnswer) => !showAnswer);
+  const t = useTranslation();
   const actions = (
     <>
       <Button
@@ -25,14 +27,14 @@ export const QnAItem = ({
         onClick={() => onEdit(item)}
         className={styles.action}
       >
-        Edit
+        {t("Q&A_EDIT_BUTTON")}
       </Button>
       <Button
         kind="danger"
         onClick={() => onRemove(item)}
         className={styles.action}
       >
-        Remove
+        {t("Q&A_REMOVE_BUTTON")}
       </Button>
     </>
   );
