@@ -2,6 +2,9 @@
 
 This project was created as an assignment for the recruitment process at [studocu](https://www.studocu.com).
 
+<img width="1728" alt="Screen Shot 2024-03-22 at 17 03 47" src="https://github.com/oddlyfunctional/studocu-assignment/assets/565635/d028a9af-377d-4443-a99c-300b16bf9a5f">
+
+
 ## How to run
 
 The simplest way to run the application is with the following command:
