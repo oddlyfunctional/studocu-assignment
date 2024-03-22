@@ -1,6 +1,6 @@
 .wrapper {
   align-items: flex-start;
-  background-color: #373737;
+  background-color: var(--accent);
   display: flex;
   justify-content: center;
   min-height: 100vh;
@@ -9,9 +9,9 @@
 }
 
 .container {
-  background-color: white;
-  max-width: 80em;
+  background-color: var(--bg);
   padding: 2em;
+  width: 80em;
 }
 
 .title {
@@ -26,7 +26,7 @@
 
 /* divider */
 .content > * + * {
-  border-left: black 1px solid;
+  border-left: var(--light-grey) 1px solid;
 }
 
 .content > * {
@@ -62,27 +62,29 @@
 }
 
 .no-questions {
-  background-color: rgb(254, 220, 220);
-  border: rgb(148, 53, 53) 1px solid;
+  background-color: var(--lighter-grey);
+  border: var(--grey) 1px solid;
   border-radius: 5px;
-  color: rgb(148, 53, 53);
+  color: var(--grey);
   padding: 2em;
 }
 
 @media only screen and (max-device-width: 640px) and (orientation: portrait) {
   .content {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   /* divider */
   .content > * + * {
-    border-bottom: black 1px solid;
     border-left: none;
+    border-top: var(--light-grey) 1px solid;
+    padding-top: 2em;
   }
 
   .description {
+    margin-bottom: 2em;
     padding-right: 0;
-    padding-top: 1em;
+    text-align: center;
   }
 
   .qna {
@@ -96,5 +98,9 @@
 
   .header-actions {
     margin-top: 1em;
+  }
+
+  .form-title {
+    text-align: center;
   }
 }

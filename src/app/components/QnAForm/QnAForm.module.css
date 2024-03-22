@@ -1,16 +1,18 @@
 .form {
+  border: var(--light-grey) 1px solid;
   display: flex;
   flex-direction: column;
+  margin: 1em 0 0 0;
+  padding: 0.5em 1em;
 }
 
 .label {
   cursor: pointer;
-  font-weight: bold;
   margin-top: 1em;
 }
 
 .input {
-  border: 1px solid #333;
+  border: 1px solid var(--light-grey);
   border-radius: 5px;
   display: block;
   margin-top: 0.5em;
@@ -19,7 +21,7 @@
 }
 
 .input:focus {
-  border: 3px solid rgb(155, 217, 255);
+  border: 3px solid var(--highlight);
   outline: none;
 }
 

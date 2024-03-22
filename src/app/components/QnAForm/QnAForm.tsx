@@ -114,7 +114,12 @@ export const QnAForm = ({
           {t("Q&A_FORM_DELAY_CHECKBOX")}
         </label>
 
-        <Button kind="primary" type="submit" className={styles.submit}>
+        <Button
+          kind="primary"
+          type="submit"
+          size="large"
+          className={styles.submit}
+        >
           {pending ? t("SUBMITTING") : submitLabel}
         </Button>
       </fieldset>

@@ -2,11 +2,10 @@
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  padding: 0.5em 1em;
 }
 
 .button:focus {
-  box-shadow: 0 0 0 3px rgb(155, 217, 255);
+  box-shadow: 0 0 0 3px var(--highlight);
   outline: none;
 }
 
@@ -15,42 +14,72 @@
   pointer-events: none;
 }
 
+.regular {
+  padding: 0.5em 1em;
+}
+
+.small {
+  font-size: 14px;
+  padding: 0.3em 0.6em;
+}
+
+.large {
+  font-size: 18px;
+  padding: 0.8em 1.5em;
+}
+
 .primary {
-  background-color: rgb(68, 106, 167);
-  color: white;
+  background-color: var(--blue);
+  color: var(--bright-font);
 }
 
 .primary:hover {
-  background-color: rgb(135, 159, 197);
+  background-color: var(--light-blue);
 }
 
 .primary:active {
-  background-color: rgb(15, 58, 126);
+  background-color: var(--dark-blue);
 }
 
 .secondary {
-  background-color: rgb(54, 56, 57);
-  color: white;
+  background-color: var(--bg);
+  border: var(--grey) 1px solid;
+  color: var(--grey);
 }
 
 .secondary:hover {
-  background-color: rgb(106, 108, 109);
+  background-color: var(--grey);
+  color: var(--bright-font);
 }
 
 .secondary:active {
-  background-color: rgb(27, 28, 29);
+  background-color: var(--dark-grey);
+  border-color: var(--dark-grey);
+}
+
+.warning {
+  background-color: var(--yellow);
+  color: var(--bright-font);
+}
+
+.warning:hover {
+  background-color: var(--light-yellow);
+}
+
+.warning:active {
+  background-color: var(--dark-yellow);
 }
 
 .danger {
-  background-color: rgb(251, 79, 79);
-  color: white;
+  background-color: var(--red);
+  color: var(--bright-font);
 }
 
 .danger:hover {
-  background-color: rgb(255, 144, 144);
+  background-color: var(--light-red);
 }
 
 .danger:active {
-  background-color: rgb(155, 30, 30);
-  color: white;
+  background-color: var(--dark-red);
+  color: var(--bright-font);
 }

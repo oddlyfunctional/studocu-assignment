@@ -1,5 +1,5 @@
 .row {
-  border: #666 1px solid;
+  border: var(--light-grey) 1px solid;
   padding: 1em;
 }
 
@@ -8,7 +8,6 @@
 }
 
 .question {
-  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -37,15 +36,15 @@
 }
 
 .answer {
-  border-left: #444 1px solid;
-  color: #666;
+  border-left: var(--light-grey) 1px solid;
+  color: var(--light-font);
   margin-left: 0;
   padding: 1em;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .editing {
-  background-color: #c9c9c9;
+  background-color: var(--lighter-yellow);
 }
 
 @media only screen and (max-device-width: 640px) and (orientation: portrait) {
@@ -57,16 +56,14 @@
     padding: 1em 0;
   }
 
-  .answer {
-    text-align: center;
-  }
-
   .actions {
     display: none;
   }
 
   .mobile-actions {
-    display: block;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 1em;
   }
 }

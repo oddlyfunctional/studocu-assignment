@@ -171,7 +171,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
             <div className={styles.form}>
               {editing ? (
                 <>
-                  <h2>
+                  <h2 className={styles["form-title"]}>
                     <span ref={formTitleAnchor}>{t("EDIT_Q&A_TITLE")}</span>
                   </h2>
                   <Tooltip anchorRef={formTitleAnchor}>
@@ -187,7 +187,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                 </>
               ) : (
                 <>
-                  <h2>
+                  <h2 className={styles["form-title"]}>
                     <span ref={formTitleAnchor}>{t("NEW_Q&A_TITLE")}</span>
                   </h2>
                   <Tooltip anchorRef={formTitleAnchor}>

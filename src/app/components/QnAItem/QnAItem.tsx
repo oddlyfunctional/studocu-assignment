@@ -23,14 +23,16 @@ export const QnAItem = ({
   const actions = (
     <>
       <Button
-        kind="secondary"
+        kind="warning"
+        size="small"
         onClick={() => onEdit(item)}
         className={styles.action}
       >
-        {t("Q&A_EDIT_BUTTON")}
+        {t(editing ? "Q&A_EDITING_BUTTON" : "Q&A_EDIT_BUTTON")}
       </Button>
       <Button
         kind="danger"
+        size="small"
         onClick={() => onRemove(item)}
         className={styles.action}
       >

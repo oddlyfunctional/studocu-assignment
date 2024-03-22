@@ -1,0 +1,25 @@
+:root {
+  --grey: rgb(86, 89, 91);
+  --light-grey: rgb(173 180 184);
+  --lighter-grey: rgb(241, 242, 243);
+  --dark-grey: rgb(27, 28, 29);
+
+  --blue: rgb(91 183 219);
+  --light-blue: rgb(152, 202, 222);
+  --dark-blue: rgb(45, 121, 151);
+
+  --red: rgb(251, 79, 79);
+  --light-red: rgb(255, 144, 144);
+  --dark-red: rgb(155, 30, 30);
+
+  --yellow: rgb(255 174 0);
+  --light-yellow: rgb(255 207 102);
+  --lighter-yellow: rgb(255, 243, 216);
+  --dark-yellow: rgb(134 101 0);
+
+  --highlight: rgb(155, 217, 255);
+  --bright-font: white;
+  --light-font: rgb(102, 102, 102);
+  --bg: white;
+  --accent: rgb(67 78 110);
+}
