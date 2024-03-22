@@ -11,7 +11,7 @@ import { QnAItem } from "@/app/components/QnAItem/QnAItem";
 import { Tooltip } from "@/app/components/Tooltip/Tooltip";
 import type { QnA } from "@/domain/core";
 import { pluralize } from "@/lib/pluralize";
-import { useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 import styles from "./App.module.css";
 
 const compareStrings = (a: string, b: string) => {
@@ -22,51 +22,83 @@ const compareStrings = (a: string, b: string) => {
   return 0;
 };
 
+type State = {
+  items: QnA[];
+  editing: QnA | null;
+};
+
+type Add = { type: "Add"; payload: QnA };
+type Remove = { type: "Remove"; payload: QnA };
+type Update = { type: "Update"; payload: QnA };
+type Edit = { type: "Edit"; payload: QnA };
+type Sort = { type: "Sort" };
+type RemoveAll = { type: "RemoveAll" };
+type Action = Add | Remove | Update | Edit | Sort | RemoveAll;
+const Actions = {
+  add: (payload: QnA): Add => ({ type: "Add", payload }),
+  remove: (payload: QnA): Remove => ({ type: "Remove", payload }),
+  update: (payload: QnA): Update => ({ type: "Update", payload }),
+  edit: (payload: QnA): Edit => ({ type: "Edit", payload }),
+  sort: (): Sort => ({ type: "Sort" }),
+  removeAll: (): RemoveAll => ({ type: "RemoveAll" }),
+};
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case "Add":
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+      };
+    case "Remove":
+      return {
+        editing: state.editing === action.payload ? null : state.editing,
+        items: state.items.filter((i) => i.id !== action.payload.id),
+      };
+    case "Update":
+      return {
+        editing: null,
+        items: state.items.map((i) => {
+          if (i.id === action.payload.id) {
+            return { ...action.payload };
+          } else {
+            return i;
+          }
+        }),
+      };
+    case "Edit":
+      return {
+        ...state,
+        editing: state.editing === action.payload ? null : action.payload,
+      };
+    case "Sort":
+      return {
+        ...state,
+        items: [...state.items].sort((a, b) =>
+          compareStrings(a.question, b.question)
+        ),
+      };
+    case "RemoveAll":
+      return {
+        items: [],
+        editing: null,
+      };
+  }
+};
+
 export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
-  const [items, setItems] = useState<QnA[]>(preloadedItems);
-  const addNewItem = (item: QnA) => setItems((items) => [...items, item]);
+  const [{ items, editing }, dispatch] = useReducer(reducer, {
+    items: preloadedItems,
+    editing: null,
+  });
   const removeItem = (item: QnA) => {
     // update UI optimistically
-    setItems((items) => items.filter((i) => i.id !== item.id));
-    if (editing === item) {
-      setEditing(null);
-    }
-
+    dispatch(Actions.remove(item));
     deleteQnA(item.id);
   };
 
-  const [editing, setEditing] = useState<QnA | null>(null);
-  const editItem = (item: QnA) => {
-    setEditing((editing) => {
-      if (editing === item) {
-        return null;
-      } else {
-        return item;
-      }
-    });
-  };
-  const updateItem = (item: QnA) => {
-    setItems((items) =>
-      items.map((i) => {
-        if (i.id === item.id) {
-          return { ...item };
-        } else {
-          return i;
-        }
-      })
-    );
-    setEditing(null);
-  };
-
-  const sortQnAs = () =>
-    setItems((items) =>
-      [...items].sort((a, b) => compareStrings(a.question, b.question))
-    );
-
   const removeAll = () => {
     // update UI optimistically
-    setItems([]);
-    setEditing(null);
+    dispatch(Actions.removeAll());
     deleteAllQnAs();
   };
 
@@ -99,7 +131,10 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                   Here you can find the created questions and their answers.
                 </Tooltip>
                 <div className={styles["header-actions"]}>
-                  <Button kind="secondary" onClick={sortQnAs}>
+                  <Button
+                    kind="secondary"
+                    onClick={() => dispatch(Actions.sort())}
+                  >
                     Sort
                   </Button>
                   <Button kind="danger" onClick={removeAll}>
@@ -119,7 +154,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                     item={item}
                     key={item.id}
                     onRemove={removeItem}
-                    onEdit={editItem}
+                    onEdit={(item) => dispatch(Actions.edit(item))}
                     editing={item === editing}
                   />
                 ))}
@@ -139,7 +174,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                   <QnAForm
                     initialState={editing}
                     action={(params) => updateQnA(editing, params)}
-                    onSubmit={updateItem}
+                    onSubmit={(item) => dispatch(Actions.update(item))}
                     submitLabel="Update question"
                   />
                 </>
@@ -154,7 +189,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
 
                   <QnAForm
                     action={createQnA}
-                    onSubmit={addNewItem}
+                    onSubmit={(item) => dispatch(Actions.add(item))}
                     submitLabel="Create question"
                   />
                 </>
