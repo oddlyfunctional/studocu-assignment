@@ -10,6 +10,11 @@
   outline: none;
 }
 
+.button:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .primary {
   background-color: rgb(68, 106, 167);
   color: white;

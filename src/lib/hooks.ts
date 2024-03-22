@@ -23,6 +23,22 @@ export const useObjectState = <T>(
   return [state, updateProp(setState), setState];
 };
 
+type ExtractValue<T, Key extends keyof T> = (
+  ev: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>
+) => T[Key];
+type InputProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "value" | "checked" | "name"
+> &
+  Omit<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    "value" | "checked" | "name"
+  >;
+type Register<T, Key extends keyof T> = (
+  key: Key,
+  props: InputProps & { extractValue?: ExtractValue<T, Key> }
+) => InputProps;
+
 /**
  * Hook to manage form state and callbacks
  * @param initialState - Initial values for the form fields
@@ -48,28 +64,30 @@ export const useObjectState = <T>(
  * }
  * ```
  */
-export const useForm = <T extends Record<string, string | File>>(
-  initialState: T
-) => {
+export const useForm = <T extends Record<string, any>>(initialState: T) => {
   const [fields, setFields] = useState<T>(initialState);
 
-  const register = <Key extends keyof T>(
-    key: Key,
-    props: Omit<InputHTMLAttributes<HTMLInputElement>, "value"> &
-      Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "value"> = {}
-  ) => ({
-    name: key,
-    value: fields[key],
-    onChange: (ev: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
-      const value = ev.currentTarget.value;
+  const register: Register<T, keyof T> = (key, { extractValue, ...props }) => {
+    const onChange = (
+      ev: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>
+    ) => {
+      const value = extractValue ? extractValue(ev) : ev.currentTarget.value;
       setFields((fields) => ({
         ...fields,
         [key]: value,
       }));
       props.onChange && props.onChange(ev);
-    },
-    ...props,
-  });
+    };
+
+    const valueKey = typeof fields[key] === "boolean" ? "checked" : "value";
+
+    return {
+      name: key,
+      [valueKey]: fields[key],
+      onChange,
+      ...props,
+    };
+  };
 
   const onSubmit =
     (f: (values: T) => void) => (ev: FormEvent<HTMLFormElement>) => {

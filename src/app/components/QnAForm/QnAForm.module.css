@@ -23,6 +23,11 @@
   outline: none;
 }
 
+.delay-checkbox {
+  cursor: pointer;
+  margin-top: 1em;
+}
+
 .submit {
   margin-top: 1em;
 }
