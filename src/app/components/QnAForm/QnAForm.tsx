@@ -45,7 +45,10 @@ export const QnAForm = ({
     ...initialState,
     delay: false,
   });
-  useEffect(() => setFields({ ...initialState, delay: false }), [initialState]);
+  useEffect(
+    () => setFields({ ...initialState, delay: false }),
+    [initialState, setFields]
+  );
   const [errors, setErrors] = useState<QnAValidationErrors>({});
   const t = useTranslation();
 

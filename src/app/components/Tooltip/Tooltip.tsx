@@ -38,7 +38,7 @@ export const Tooltip = ({
     } else {
       setPosition({});
     }
-  }, [show, anchorRef, tooltipRef]);
+  }, [show, anchorRef, tooltipRef, offset]);
 
   useEffect(() => {
     const showListener = () => setShow(true);
