@@ -46,9 +46,11 @@ export const Tooltip = ({
 
     anchorRef.current?.addEventListener("mouseenter", showListener);
     anchorRef.current?.addEventListener("mouseleave", hideListener);
+    document.addEventListener("scroll", hideListener);
     () => {
       anchorRef.current?.removeEventListener("mouseenter", showListener);
       anchorRef.current?.removeEventListener("mouseleave", hideListener);
+      document.removeEventListener("scroll", hideListener);
     };
   }, [tooltipRef, anchorRef]);
 
