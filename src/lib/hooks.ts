@@ -3,27 +3,10 @@ import {
   useContext,
   useState,
   type ChangeEvent,
-  type Dispatch,
   type FormEvent,
   type InputHTMLAttributes,
-  type SetStateAction,
   type TextareaHTMLAttributes,
 } from "react";
-
-export const updateProp =
-  <T>(setState: Dispatch<SetStateAction<T>>) =>
-  <K extends keyof T>(key: K) =>
-  (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const value = ev.currentTarget.value;
-    setState((state) => ({ ...state, [key]: value }));
-  };
-
-export const useObjectState = <T>(
-  initialValue: T
-): [T, ReturnType<typeof updateProp<T>>, Dispatch<SetStateAction<T>>] => {
-  const [state, setState] = useState<T>(initialValue);
-  return [state, updateProp(setState), setState];
-};
 
 type ExtractValue<T, Key extends keyof T> = (
   ev: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>
