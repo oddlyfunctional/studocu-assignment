@@ -48,6 +48,7 @@ describe("App", () => {
             qnas: {
               qnas: items,
               editing: null,
+              order: null,
             },
           }}
         >

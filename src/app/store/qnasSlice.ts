@@ -1,15 +1,22 @@
 import type { RootState } from "@/app/store/store";
 import type { QnA } from "@/domain/core";
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSelector,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 
+export type Order = "ASC" | "DESC" | null;
 export type State = {
   qnas: QnA[];
   editing: QnA | null;
+  order: Order;
 };
 
 const initialState: State = {
   qnas: [],
   editing: null,
+  order: null,
 };
 
 const compareStrings = (a: string, b: string) => {
@@ -44,7 +51,17 @@ export const qnasSlice = createSlice({
         state.editing?.id === action.payload.id ? null : action.payload;
     },
     sort: (state) => {
-      state.qnas.sort((a, b) => compareStrings(a.question, b.question));
+      switch (state.order) {
+        case "ASC":
+          state.order = "DESC";
+          break;
+        case "DESC":
+          state.order = null;
+          break;
+        case null:
+          state.order = "ASC";
+          break;
+      }
     },
     removeAll: (state) => {
       state.qnas = [];
@@ -54,6 +71,20 @@ export const qnasSlice = createSlice({
 });
 
 export const { add, remove, update, edit, sort, removeAll } = qnasSlice.actions;
-export const selectQnAs = (state: RootState) => state.qnas.qnas;
+export const selectOrder = (state: RootState) => state.qnas.order;
+const selectQnAs = (state: RootState) => state.qnas.qnas;
+export const selectOrderedQnAs = createSelector(
+  [selectQnAs, selectOrder],
+  (qnas, order) => {
+    switch (order) {
+      case "ASC":
+        return [...qnas].sort((a, b) => compareStrings(a.question, b.question));
+      case "DESC":
+        return [...qnas].sort((a, b) => compareStrings(b.question, a.question));
+      case null:
+        return qnas;
+    }
+  }
+);
 export const selectEditing = (state: RootState) => state.qnas.editing;
 export default qnasSlice.reducer;

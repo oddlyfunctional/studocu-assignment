@@ -10,7 +10,8 @@ import { StoreProvider } from "@/app/store/StoreProvider";
 import {
   removeAll,
   selectEditing,
-  selectQnAs,
+  selectOrder,
+  selectOrderedQnAs,
   sort,
 } from "@/app/store/qnasSlice";
 import type { QnA } from "@/domain/core";
@@ -23,7 +24,8 @@ import { useRef } from "react";
 import styles from "./App.module.css";
 
 export const App = () => {
-  const items = useAppSelector(selectQnAs);
+  const items = useAppSelector(selectOrderedQnAs);
+  const order = useAppSelector(selectOrder);
   const isEditing = Boolean(useAppSelector(selectEditing));
   const dispatch = useAppDispatch();
   const qnaListTitleAnchor = useRef(null);
@@ -59,6 +61,7 @@ export const App = () => {
                 <div className={styles["header-actions"]}>
                   <Button kind="secondary" onClick={() => dispatch(sort())}>
                     {t("SORT_BUTTON")}
+                    {order === "ASC" ? "👇" : order === "DESC" ? "☝️" : null}
                   </Button>
                   <Button
                     kind="danger"
@@ -139,6 +142,7 @@ export const AppContainer = ({
             qnas: {
               qnas: preloadedItems,
               editing: null,
+              order: null,
             },
           }}
         >
