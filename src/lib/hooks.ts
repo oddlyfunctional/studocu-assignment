@@ -1,3 +1,4 @@
+import type { AppDispatch, RootState } from "@/app/store/store";
 import { I18nContext, translate } from "@/i18n/i18n";
 import {
   useContext,
@@ -7,6 +8,11 @@ import {
   type InputHTMLAttributes,
   type TextareaHTMLAttributes,
 } from "react";
+import {
+  useDispatch,
+  useSelector,
+  type TypedUseSelectorHook,
+} from "react-redux";
 
 type ExtractValue<T, Key extends keyof T> = (
   ev: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>
@@ -87,3 +93,6 @@ export const useTranslation = () => {
   const context = useContext(I18nContext);
   return translate(context.dictionary);
 };
+
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

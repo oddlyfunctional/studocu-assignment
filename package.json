@@ -26,11 +26,13 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.5.4",
+    "@reduxjs/toolkit": "^2.2.2",
     "negotiator": "^0.6.3",
     "next": "14.1.4",
     "pg": "^8.11.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-redux": "^9.1.0",
     "sql-template-strings": "^2.2.2",
     "zod": "^3.22.4"
   },

@@ -1,7 +1,7 @@
 import { getDictionary, getLocale, getLocales } from "@/actions/i18nActions";
 import { getAllQnAs } from "@/actions/qnaActions";
 import { AppContainer } from "@/app/App";
-import type { NonEmptyString, QnAId } from "@/domain/core";
+import type { NonEmptyString, QnAId, Timestamp } from "@/domain/core";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ const blankslate = [
     id: -1 as QnAId,
     question: "How to add a question?" as NonEmptyString,
     answer: "Just use the form below!" as NonEmptyString,
-    createdAt: new Date(),
+    createdAt: new Date().getTime() as Timestamp,
   },
 ];
 

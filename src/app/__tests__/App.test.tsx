@@ -1,5 +1,6 @@
 import { App as OriginalApp } from "@/app/App";
-import type { NonEmptyString, QnA, QnAId } from "@/domain/core";
+import { StoreProvider } from "@/app/store/StoreProvider";
+import type { NonEmptyString, QnA, QnAId, Timestamp } from "@/domain/core";
 import { I18nContext, type Context } from "@/i18n/i18n";
 import { ok } from "@/lib/result";
 import "@testing-library/jest-dom";
@@ -39,10 +40,19 @@ describe("App", () => {
     ).default;
   });
 
-  const App = (props: Parameters<typeof OriginalApp>[0]) => {
+  const App = ({ items }: { items: QnA[] }) => {
     return (
       <I18nContext.Provider value={i18nContext}>
-        <OriginalApp {...props} />
+        <StoreProvider
+          initialState={{
+            qnas: {
+              qnas: items,
+              editing: null,
+            },
+          }}
+        >
+          <OriginalApp />
+        </StoreProvider>
       </I18nContext.Provider>
     );
   };
@@ -56,12 +66,12 @@ describe("App", () => {
     id: -1 as QnAId,
     question: "How to add a question?" as NonEmptyString,
     answer: "Just use the form below!" as NonEmptyString,
-    createdAt: new Date(),
+    createdAt: new Date().getTime() as Timestamp,
   };
 
   it("adds new question", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[]} />);
+    render(<App items={[]} />);
 
     expect(screen.getByRole("main")).toHaveTextContent("no questions");
     await userEvent.type(screen.getByLabelText("Question"), "New question");
@@ -78,7 +88,7 @@ describe("App", () => {
 
   it("sorts the questions alphabetically ignoring case", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[qna]} />);
+    render(<App items={[qna]} />);
 
     await userEvent.type(screen.getByLabelText("Question"), "a question");
     await userEvent.type(screen.getByLabelText("Answer"), "An answer");
@@ -91,7 +101,7 @@ describe("App", () => {
 
   it("removes all questions", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[qna]} />);
+    render(<App items={[qna]} />);
 
     await userEvent.click(screen.getByText("Remove all"));
     expect(screen.getByRole("main")).toHaveTextContent("no questions");
@@ -102,7 +112,7 @@ describe("App", () => {
 
   it("removes specific question", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[qna]} />);
+    render(<App items={[qna]} />);
 
     await userEvent.type(screen.getByLabelText("Question"), "New question");
     await userEvent.type(screen.getByLabelText("Answer"), "New answer");
@@ -116,7 +126,7 @@ describe("App", () => {
 
   it("edits question", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[qna]} />);
+    render(<App items={[qna]} />);
 
     const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Edit"));
@@ -136,7 +146,7 @@ describe("App", () => {
 
   it("clears editing item when removing it", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[qna]} />);
+    render(<App items={[qna]} />);
 
     const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Edit"));
@@ -148,7 +158,7 @@ describe("App", () => {
 
   it("clears editing item when removing all items", async () => {
     const userEvent = UserEvent.setup();
-    render(<App preloadedItems={[qna]} />);
+    render(<App items={[qna]} />);
 
     const item = screen.getByText(qna.question);
     await userEvent.click(within(item.parentElement!).getByText("Edit"));

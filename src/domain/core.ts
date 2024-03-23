@@ -14,12 +14,15 @@ export const makeNonEmptyString = (
   return ok(s as NonEmptyString);
 };
 
+// it's easier to serialize/deserialize using number instead of Date
+export type Timestamp = Branded<number, "Timestamp">;
+
 export type QnAId = Branded<number, "QnAId">;
 export type QnA = {
   id: QnAId;
   question: NonEmptyString;
   answer: NonEmptyString;
-  createdAt: Date;
+  createdAt: Timestamp;
 };
 
 export type QnAValidationErrors = {
@@ -46,7 +49,7 @@ export const createQnA = (
   return ok({
     question: question.value,
     answer: answer.value,
-    createdAt: clock.now(),
+    createdAt: clock.now().getTime() as Timestamp,
   });
 };
 

@@ -1,5 +1,5 @@
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
-import type { NonEmptyString, QnA, QnAId } from "@/domain/core";
+import type { NonEmptyString, QnA, QnAId, Timestamp } from "@/domain/core";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -9,7 +9,7 @@ describe("QnAItem", () => {
     id: 1 as QnAId,
     question: "some question" as NonEmptyString,
     answer: "some answer" as NonEmptyString,
-    createdAt: new Date(),
+    createdAt: new Date().getTime() as Timestamp,
   };
 
   it("should not display answer by default", () => {

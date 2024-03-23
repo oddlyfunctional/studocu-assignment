@@ -1,22 +1,16 @@
 "use client";
 
+import { deleteQnA } from "@/actions/qnaActions";
 import { Button } from "@/app/components/Button/Button";
+import { edit, remove, selectEditing } from "@/app/store/qnasSlice";
 import type { QnA } from "@/domain/core";
-import { useTranslation } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector, useTranslation } from "@/lib/hooks";
 import { useState } from "react";
 import styles from "./QnAItem.module.css";
 
-export const QnAItem = ({
-  item,
-  onRemove = () => {},
-  onEdit = () => {},
-  editing = false,
-}: {
-  item: QnA;
-  onRemove?: (item: QnA) => void;
-  onEdit?: (item: QnA) => void;
-  editing?: boolean;
-}) => {
+export const QnAItem = ({ item }: { item: QnA }) => {
+  const dispatch = useAppDispatch();
+  const isEditing = useAppSelector(selectEditing) === item;
   const [showAnswer, setShowAnswer] = useState(false);
   const toggleAnswer = () => setShowAnswer((showAnswer) => !showAnswer);
   const t = useTranslation();
@@ -25,15 +19,19 @@ export const QnAItem = ({
       <Button
         kind="warning"
         size="small"
-        onClick={() => onEdit(item)}
+        onClick={() => dispatch(edit(item))}
         className={styles.action}
       >
-        {t(editing ? "Q&A_EDITING_BUTTON" : "Q&A_EDIT_BUTTON")}
+        {t(isEditing ? "Q&A_EDITING_BUTTON" : "Q&A_EDIT_BUTTON")}
       </Button>
       <Button
         kind="danger"
         size="small"
-        onClick={() => onRemove(item)}
+        onClick={() => {
+          // update UI optimistically
+          dispatch(remove(item));
+          deleteQnA(item.id);
+        }}
         className={styles.action}
       >
         {t("Q&A_REMOVE_BUTTON")}
@@ -43,7 +41,7 @@ export const QnAItem = ({
 
   return (
     <div
-      className={[styles.row, editing && styles.editing]
+      className={[styles.row, isEditing && styles.editing]
         .filter(Boolean)
         .join(" ")}
     >

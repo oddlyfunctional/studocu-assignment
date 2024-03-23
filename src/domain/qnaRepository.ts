@@ -3,6 +3,7 @@ import type {
   QnA,
   QnAId,
   QnARepository as Repository,
+  Timestamp,
 } from "@/domain/core";
 import type { Db } from "@/lib/db";
 import { error, ok } from "@/lib/result";
@@ -37,7 +38,7 @@ export const make = (db: Db): Repository => ({
           // need to revalidate each individual field.
           question: row.question as NonEmptyString,
           answer: row.answer as NonEmptyString,
-          createdAt: row.createdAt,
+          createdAt: row.createdAt.getTime() as Timestamp,
         })
       )
     );
@@ -52,7 +53,7 @@ export const make = (db: Db): Repository => ({
     ) VALUES (
         ${qna.question},
         ${qna.answer},
-        ${qna.createdAt}
+        ${new Date(qna.createdAt)}
     ) RETURNING id
     `,
       z.object({ id: z.number() })

@@ -1,116 +1,33 @@
 "use client";
-import {
-  createQnA,
-  deleteAllQnAs,
-  deleteQnA,
-  updateQnA,
-} from "@/actions/qnaActions";
+import { deleteAllQnAs } from "@/actions/qnaActions";
 import { Button } from "@/app/components/Button/Button";
 import { ErrorPage } from "@/app/components/ErrorPage/ErrorPage";
 import { LocaleSwitcher } from "@/app/components/LocaleSwitcher/LocaleSwitcher";
 import { QnAForm } from "@/app/components/QnAForm/QnAForm";
 import { QnAItem } from "@/app/components/QnAItem/QnAItem";
 import { Tooltip } from "@/app/components/Tooltip/Tooltip";
+import { StoreProvider } from "@/app/store/StoreProvider";
+import {
+  removeAll,
+  selectEditing,
+  selectQnAs,
+  sort,
+} from "@/app/store/qnasSlice";
 import type { QnA } from "@/domain/core";
 import * as I18n from "@/i18n/i18n";
-import { useTranslation } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector, useTranslation } from "@/lib/hooks";
 import { pluralize } from "@/lib/pluralize";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { useRouter } from "next/navigation";
-import { useReducer, useRef } from "react";
+import { useRef } from "react";
 import styles from "./App.module.css";
 
-const compareStrings = (a: string, b: string) => {
-  a = a.toLowerCase();
-  b = b.toLowerCase();
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
-};
-
-type State = {
-  items: QnA[];
-  editing: QnA | null;
-};
-
-type Add = { type: "Add"; payload: QnA };
-type Remove = { type: "Remove"; payload: QnA };
-type Update = { type: "Update"; payload: QnA };
-type Edit = { type: "Edit"; payload: QnA };
-type Sort = { type: "Sort" };
-type RemoveAll = { type: "RemoveAll" };
-type Action = Add | Remove | Update | Edit | Sort | RemoveAll;
-const Actions = {
-  add: (payload: QnA): Add => ({ type: "Add", payload }),
-  remove: (payload: QnA): Remove => ({ type: "Remove", payload }),
-  update: (payload: QnA): Update => ({ type: "Update", payload }),
-  edit: (payload: QnA): Edit => ({ type: "Edit", payload }),
-  sort: (): Sort => ({ type: "Sort" }),
-  removeAll: (): RemoveAll => ({ type: "RemoveAll" }),
-};
-const reducer = (state: State, action: Action) => {
-  switch (action.type) {
-    case "Add":
-      return {
-        ...state,
-        items: [...state.items, action.payload],
-      };
-    case "Remove":
-      return {
-        editing: state.editing === action.payload ? null : state.editing,
-        items: state.items.filter((i) => i.id !== action.payload.id),
-      };
-    case "Update":
-      return {
-        editing: null,
-        items: state.items.map((i) => {
-          if (i.id === action.payload.id) {
-            return { ...action.payload };
-          } else {
-            return i;
-          }
-        }),
-      };
-    case "Edit":
-      return {
-        ...state,
-        editing: state.editing === action.payload ? null : action.payload,
-      };
-    case "Sort":
-      return {
-        ...state,
-        items: [...state.items].sort((a, b) =>
-          compareStrings(a.question, b.question)
-        ),
-      };
-    case "RemoveAll":
-      return {
-        items: [],
-        editing: null,
-      };
-  }
-};
-
-export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
-  const [{ items, editing }, dispatch] = useReducer(reducer, {
-    items: preloadedItems,
-    editing: null,
-  });
-  const removeItem = (item: QnA) => {
-    // update UI optimistically
-    dispatch(Actions.remove(item));
-    deleteQnA(item.id);
-  };
-
-  const removeAll = () => {
-    // update UI optimistically
-    dispatch(Actions.removeAll());
-    deleteAllQnAs();
-  };
-
+export const App = () => {
+  const items = useAppSelector(selectQnAs);
+  const isEditing = Boolean(useAppSelector(selectEditing));
+  const dispatch = useAppDispatch();
   const qnaListTitleAnchor = useRef(null);
   const formTitleAnchor = useRef(null);
-
   const t = useTranslation();
 
   return (
@@ -140,13 +57,17 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                   {t("Q&A_LIST_TOOLTIP")}
                 </Tooltip>
                 <div className={styles["header-actions"]}>
-                  <Button
-                    kind="secondary"
-                    onClick={() => dispatch(Actions.sort())}
-                  >
+                  <Button kind="secondary" onClick={() => dispatch(sort())}>
                     {t("SORT_BUTTON")}
                   </Button>
-                  <Button kind="danger" onClick={removeAll}>
+                  <Button
+                    kind="danger"
+                    onClick={() => {
+                      // update UI optimistically
+                      dispatch(removeAll());
+                      deleteAllQnAs();
+                    }}
+                  >
                     {t("REMOVE_ALL_BUTTON")}
                   </Button>
                 </div>
@@ -159,19 +80,13 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                   </div>
                 )}
                 {items.map((item) => (
-                  <QnAItem
-                    item={item}
-                    key={item.id}
-                    onRemove={removeItem}
-                    onEdit={(item) => dispatch(Actions.edit(item))}
-                    editing={item === editing}
-                  />
+                  <QnAItem item={item} key={item.id} />
                 ))}
               </dl>
             </div>
 
             <div className={styles.form}>
-              {editing ? (
+              {isEditing ? (
                 <>
                   <h2 className={styles["form-title"]}>
                     <span ref={formTitleAnchor}>{t("EDIT_Q&A_TITLE")}</span>
@@ -180,12 +95,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                     {t("EDIT_Q&A_TOOLTIP")}
                   </Tooltip>
 
-                  <QnAForm
-                    initialState={editing}
-                    action={(params) => updateQnA(editing, params)}
-                    onSubmit={(item) => dispatch(Actions.update(item))}
-                    submitLabel={t("EDIT_Q&A_SUBMIT")}
-                  />
+                  <QnAForm />
                 </>
               ) : (
                 <>
@@ -196,11 +106,7 @@ export const App = ({ preloadedItems }: { preloadedItems: QnA[] }) => {
                     {t("NEW_Q&A_TOOLTIP")}
                   </Tooltip>
 
-                  <QnAForm
-                    action={createQnA}
-                    onSubmit={(item) => dispatch(Actions.add(item))}
-                    submitLabel={t("NEW_Q&A_SUBMIT")}
-                  />
+                  <QnAForm />
                 </>
               )}
             </div>
@@ -228,7 +134,16 @@ export const AppContainer = ({
   return (
     <I18n.I18nContext.Provider value={{ ...i18nContext, setLocale }}>
       <ErrorBoundary errorComponent={ErrorPage}>
-        <App preloadedItems={preloadedItems} />
+        <StoreProvider
+          initialState={{
+            qnas: {
+              qnas: preloadedItems,
+              editing: null,
+            },
+          }}
+        >
+          <App />
+        </StoreProvider>
       </ErrorBoundary>
     </I18n.I18nContext.Provider>
   );
