@@ -18,13 +18,13 @@ const blankslate = [
 ];
 
 export default async function Home() {
-  const items = await getAllQnAs();
+  const items = process.env.USE_PERSISTENCE ? await getAllQnAs() : blankslate;
   const locale = await getLocale();
   const supportedLocales = await getLocales();
   const dictionary = await getDictionary();
   return (
     <AppContainer
-      preloadedItems={items.length === 0 ? blankslate : items}
+      preloadedItems={items}
       i18nContext={{ locale, supportedLocales, dictionary }}
     />
   );
