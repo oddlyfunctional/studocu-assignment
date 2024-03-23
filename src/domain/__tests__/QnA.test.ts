@@ -17,7 +17,7 @@ describe("QnA", () => {
       ok({
         question: "some question",
         answer: "some answer",
-        createdAt: now,
+        createdAt: now.getTime(),
       })
     );
   });
