@@ -44,8 +44,9 @@ export const QnAItem = ({ item }: { item: QnA }) => {
       className={[styles.row, isEditing && styles.editing]
         .filter(Boolean)
         .join(" ")}
+      role="listitem"
     >
-      <dt role="term" className={styles.question}>
+      <div role="term" className={styles.question}>
         <div
           onClick={toggleAnswer}
           aria-label="question"
@@ -54,11 +55,11 @@ export const QnAItem = ({ item }: { item: QnA }) => {
           {item.question}
         </div>
         <div className={styles.actions}>{actions}</div>
-      </dt>
+      </div>
       {showAnswer && (
-        <dd role="definition" className={styles.answer}>
+        <div role="definition" className={styles.answer}>
           {item.answer}
-        </dd>
+        </div>
       )}
 
       <div className={styles["mobile-actions"]}>{actions}</div>

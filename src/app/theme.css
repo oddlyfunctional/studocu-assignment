@@ -1,14 +1,14 @@
 :root {
   --grey: rgb(86, 89, 91);
-  --light-grey: rgb(173 180 184);
+  --light-grey: rgb(173, 180, 184);
   --lighter-grey: rgb(241, 242, 243);
   --dark-grey: rgb(27, 28, 29);
 
-  --blue: rgb(91 183 219);
+  --blue: rgb(24, 123, 165);
   --light-blue: rgb(152, 202, 222);
-  --dark-blue: rgb(45, 121, 151);
+  --dark-blue: rgb(15, 74, 97);
 
-  --red: rgb(251, 79, 79);
+  --red: rgb(212, 55, 55);
   --light-red: rgb(255, 144, 144);
   --dark-red: rgb(155, 30, 30);
 

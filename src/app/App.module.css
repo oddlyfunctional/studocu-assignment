@@ -61,6 +61,10 @@
   margin-top: 2em;
 }
 
+.questions {
+  margin-top: 1em;
+}
+
 .no-questions {
   background-color: var(--lighter-grey);
   border: var(--grey) 1px solid;

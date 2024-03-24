@@ -59,7 +59,6 @@
 
 .warning {
   background-color: var(--yellow);
-  color: var(--bright-font);
 }
 
 .warning:hover {
@@ -68,6 +67,7 @@
 
 .warning:active {
   background-color: var(--dark-yellow);
+  color: var(--bright-font);
 }
 
 .danger {

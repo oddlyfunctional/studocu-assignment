@@ -9,6 +9,7 @@ export const LocaleSwitcher = () => {
 
   return (
     <select
+      aria-label="change language"
       value={locale}
       onChange={(ev) => {
         setLocale(ev.currentTarget.value);

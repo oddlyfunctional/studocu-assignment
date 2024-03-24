@@ -76,7 +76,7 @@ export const App = () => {
                 </div>
               </header>
 
-              <dl role="list">
+              <div role="list" className={styles.questions}>
                 {items.length === 0 && (
                   <div className={styles["no-questions"]}>
                     {t("Q&A_LIST_BLANKSLATE")}
@@ -85,7 +85,7 @@ export const App = () => {
                 {items.map((item) => (
                   <QnAItem item={item} key={item.id} />
                 ))}
-              </dl>
+              </div>
             </div>
 
             <div className={styles.form}>
